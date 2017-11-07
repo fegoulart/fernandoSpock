@@ -159,42 +159,136 @@ type TitlesStruct struct {
 	Mirror         bool   `json:"mirror"`
 }
 
+type SourceStruct struct {
+	UID  string `json:"uid"`
+	Name string `json:"name"`
+}
+
+type TargetStruct struct {
+	UID  string `json:"uid"`
+	Name string `json:"name"`
+}
+
+type CharacterRelationsStruct struct {
+	Type   string       `json:"type"`
+	Source SourceStruct `json:"source"`
+	Target TargetStruct `json:"target"`
+}
+
 type Character2Struct struct {
-	UID                    string                   `json:"uid"`
-	Name                   string                   `json:"name"`
-	Gender                 string                   `json:"gender"`
-	YearOfBirth            int64                    `json:"yearOfBirth"`
-	MonthOfBirth           int64                    `json:"monthOfBirth"`
-	DayOfBirth             int64                    `json:"dayOfBirth"`
-	PlaceOfBirth           string                   `json:"placeOfBirth"`
-	YearOfDeath            int64                    `json:"yearOfDeath"`
-	MonthOfDeath           int64                    `json:"monthOfDeath"`
-	DayOfDeath             int64                    `json:"dayOfDeath"`
-	PlaceOfDeath           string                   `json:"placeOfDeath"`
-	Height                 float32                  `json:"height"`
-	Weight                 float32                  `json:"weight"`
-	Deceased               bool                     `json:"deceased"`
-	BloodType              string                   `json:"bloodType"`
-	MaritalStatus          string                   `json:"string"`
-	SerialNumber           string                   `json:"serialNumber"`
-	HologramActivationDate int32                    `json:"hologramActivationDate"`
-	HologramStatus         string                   `json:"hologramStatus"`
-	HologramDateStatus     string                   `json:"hologramDateStatus"`
-	Hologram               bool                     `json:"hologram"`
-	FictionalCharacter     bool                     `json:"fictionalCharacter"`
-	Mirror                 bool                     `json:"mirror"`
-	AlternateReality       bool                     `json:"alternateReality"`
-	Performers             []PerformerStruct        `json:"performers"`
-	Episodes               []EpisodeStruct          `json:"episodes"`
-	Movies                 []MoviesStruct           `json:"movies"`
-	CharacterSpecies       []CharacterSpeciesStruct `json:"characterSpecies"`
-	CharacterRelations     []string                 `json:"characterRelations"`
-	Titles                 []TitlesStruct           `json:"titles"`
-	Organizations          []string                 `json:"organizations"`
+	UID                    string                     `json:"uid"`
+	Name                   string                     `json:"name"`
+	Gender                 string                     `json:"gender"`
+	YearOfBirth            int64                      `json:"yearOfBirth"`
+	MonthOfBirth           int64                      `json:"monthOfBirth"`
+	DayOfBirth             int64                      `json:"dayOfBirth"`
+	PlaceOfBirth           string                     `json:"placeOfBirth"`
+	YearOfDeath            int64                      `json:"yearOfDeath"`
+	MonthOfDeath           int64                      `json:"monthOfDeath"`
+	DayOfDeath             int64                      `json:"dayOfDeath"`
+	PlaceOfDeath           string                     `json:"placeOfDeath"`
+	Height                 float32                    `json:"height"`
+	Weight                 float32                    `json:"weight"`
+	Deceased               bool                       `json:"deceased"`
+	BloodType              string                     `json:"bloodType"`
+	MaritalStatus          string                     `json:"string"`
+	SerialNumber           string                     `json:"serialNumber"`
+	HologramActivationDate int32                      `json:"hologramActivationDate"`
+	HologramStatus         string                     `json:"hologramStatus"`
+	HologramDateStatus     string                     `json:"hologramDateStatus"`
+	Hologram               bool                       `json:"hologram"`
+	FictionalCharacter     bool                       `json:"fictionalCharacter"`
+	Mirror                 bool                       `json:"mirror"`
+	AlternateReality       bool                       `json:"alternateReality"`
+	Performers             []PerformerStruct          `json:"performers"`
+	Episodes               []EpisodeStruct            `json:"episodes"`
+	Movies                 []MoviesStruct             `json:"movies"`
+	CharacterSpecies       []CharacterSpeciesStruct   `json:"characterSpecies"`
+	CharacterRelations     []CharacterRelationsStruct `json:"characterRelations"`
+	Titles                 []TitlesStruct             `json:"titles"`
+	Organizations          []string                   `json:"organizations"`
 }
 
 type CharacterFullStruct struct {
 	Character Character2Struct `json:"character"`
+}
+
+func translate(englishInput string) string {
+	charMap := map[string]string{
+		"a": "0xF8D0",
+		"A": "0xF8D0",
+		"b": "0xF8D1",
+		"B": "0xF8D1",
+		"d": "0xF8D3",
+		"D": "0xF8D3",
+		"e": "0xF8D4",
+		"E": "0xF8D4",
+		"h": "0xF8D6",
+		"H": "0xF8D6",
+		"i": "0xF8D7",
+		"I": "0xF8D7",
+		"j": "0xF8D8",
+		"J": "0xF8D8",
+		"l": "0xF8D9",
+		"L": "0xF8D9",
+		"m": "0xF8DA",
+		"M": "0xF8DA",
+		"n": "0xF8DB",
+		"N": "0xF8DB",
+		"O": "0xF8DD",
+		"o": "0xF8DD",
+		"p": "0xF8DE",
+		"P": "0xF8DE",
+		"q": "0xF8DF",
+		"Q": "0xF8E0",
+		"r": "0xF8E1",
+		"R": "0xF8E1",
+		"s": "0xF8E2",
+		"S": "0xF8E2",
+		"t": "0xF8E3",
+		"T": "0xF8E3",
+		"u": "0xF8E5",
+		"U": "0xF8E5",
+		"v": "0xF8E6",
+		"V": "0xF8E6",
+		"w": "0xF8E7",
+		"W": "0xF8E7",
+		"y": "0xF8E8",
+		"Y": "0xF8E8",
+		"'": "0xF8E9",
+		"0": "0xF8F0",
+		"1": "0xF8F1",
+		"2": "0xF8F2",
+		"3": "0xF8F3",
+		"4": "0xF8F4",
+		"5": "0xF8F5",
+		"6": "0xF8F6",
+		"7": "0xF8F7",
+		"8": "0xF8F8",
+		"9": "0xF8F9",
+		".": "0xF8FD",
+		",": "0xF8FE",
+		" ": "0x0020",
+	}
+
+	var translationResult = ""
+
+	for i := 0; i < len(englishInput); i++ {
+		result := charMap[string(englishInput[i])]
+		if result == "" {
+			return englishInput
+		} else {
+			//white space between codes
+			if i > 0 {
+				result = " " + result
+			}
+			translationResult = translationResult + result
+		}
+
+	}
+
+	return translationResult
+
 }
 
 func main() {
@@ -203,84 +297,106 @@ func main() {
 
 	argsWithoutProg := os.Args[1:]
 
-	fmt.Println(argsWithoutProg)
+	var englishName string
+	englishName = ""
 
-	//TODO: Translate to Klingon
-
-	//Call to Character Endpoint
-
-	//FIXME: Change to arguments
-	data := url.Values{}
-	data.Set("title", "Uhura")
-	data.Add("name", "Uhura")
-
-	// Call API to search character by name
-	req, err := http.NewRequest("POST", characterSearchUrl, bytes.NewBufferString(data.Encode()))
-	if err != nil {
-		log.Fatal("NewRequest: ", err)
-		return
-	}
-	client := &http.Client{}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatal("Do: ", err)
-		return
+	for i := 0; i < len(argsWithoutProg); i++ {
+		if i > 0 {
+			englishName = englishName + " " + argsWithoutProg[i]
+		} else {
+			englishName = englishName + argsWithoutProg[i]
+		}
 	}
 
-	defer resp.Body.Close()
+	translateResult := translate(englishName)
 
-	var inputJson PageStruct
+	fmt.Println(translateResult)
 
-	if err := json.NewDecoder(resp.Body).Decode(&inputJson); err != nil {
-		log.Println(err)
-	}
+	if translateResult == englishName {
+		// Translate Error
+		fmt.Println("No translation found")
 
-	// Check API result
-	if resp.StatusCode == 200 {
+	} else {
 
-		var elements int64
-		elements = inputJson.Page.NumberOfElements
+		//Call to Character Endpoint
 
-		// Check if character exists
-		if elements > 0 {
-			// Character key is inputJson.Characters[0].UID
+		data := url.Values{}
+		data.Set("title", englishName)
+		data.Add("name", englishName)
 
-			// Make another call to get Character Details
+		// Call API to search character by name
+		req, err := http.NewRequest("POST", characterSearchUrl, bytes.NewBufferString(data.Encode()))
+		if err != nil {
+			log.Fatal("NewRequest: ", err)
+			return
+		}
+		client := &http.Client{}
 
-			newUrl := characterUrl+inputJson.Characters[0].UID
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Fatal("Do: ", err)
+			return
+		}
 
-			req2, err := http.NewRequest("GET", newUrl, nil)
-			if err != nil {
-				log.Fatal("NewRequest: ", err)
-				return
-			}
-			client2 := &http.Client{}
+		defer resp.Body.Close()
 
-			resp2, err := client2.Do(req2)
-			if err != nil {
-				log.Fatal("Do: ", err)
-				return
-			}
+		var inputJson PageStruct
 
-			defer resp2.Body.Close()
+		if err := json.NewDecoder(resp.Body).Decode(&inputJson); err != nil {
+			log.Println(err)
+		}
 
-			var characterJson CharacterFullStruct
+		// Check API result
+		if resp.StatusCode == 200 {
 
-			if err := json.NewDecoder(resp2.Body).Decode(&characterJson); err != nil {
-				log.Println(err)
-			}
+			var elements int64
+			elements = inputJson.Page.NumberOfElements
 
-			//Print Species
-			if resp.StatusCode == 200 {
-				fmt.Println(characterJson.Character.CharacterSpecies[0].Name)
+			// Check if character exists
+			if elements > 0 {
+				// Character key is inputJson.Characters[0].UID
+
+				// Make another call to get Character Details
+
+				newUrl := characterUrl + inputJson.Characters[0].UID
+
+				req2, err := http.NewRequest("GET", newUrl, nil)
+				if err != nil {
+					log.Fatal("NewRequest: ", err)
+					return
+				}
+				client2 := &http.Client{}
+
+				resp2, err := client2.Do(req2)
+				if err != nil {
+					log.Fatal("Do: ", err)
+					return
+				}
+
+				defer resp2.Body.Close()
+
+				var characterJson CharacterFullStruct
+
+				if err := json.NewDecoder(resp2.Body).Decode(&characterJson); err != nil {
+					log.Println(err)
+				}
+
+				//Print Species
+				if resp.StatusCode == 200 {
+					if len(characterJson.Character.CharacterSpecies) == 0 {
+						fmt.Println("No species informed")
+					} else {
+
+						fmt.Println(characterJson.Character.CharacterSpecies[0].Name)
+					}
+				} else {
+					fmt.Println("Error retrieving character species")
+				}
 			} else {
-				fmt.Println("Error retrieving character species")
+				fmt.Println("Character not found")
 			}
 		} else {
-			fmt.Println("Character not found")
+			fmt.Println("Error searching for character")
 		}
-	} else {
-		fmt.Println("Error searching for character")
 	}
 }
