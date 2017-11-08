@@ -58,5 +58,5 @@ Just run the code below to run it
 Feel free to use it whenever you want. Pull requests are more than welcome.<br>
 
 ![Spock greeting](https://github.com/fegoulart/fegoulartAssets/blob/master/spock.jpg)
-<br>
+<br><br>
 Bedankt
