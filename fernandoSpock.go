@@ -8,10 +8,11 @@ import (
 	"net/url"
 	"log"
 	"bytes"
+	"strings"
 )
 
 // URLs
-var characterSearchUrl = "http://stapi.co/api/v1/rest/character/search"
+var characterSearchUrl = "http://stapi.co/api/v1/rest/character/search?pageSize=2000"
 var characterUrl = "http://stapi.co/api/v1/rest/character?uid="
 
 // Structs
@@ -175,7 +176,23 @@ type CharacterRelationsStruct struct {
 	Target TargetStruct `json:"target"`
 }
 
-//FIXME: Organizations          []string                   `json:"organizations"`
+type OrganizationStruct struct {
+	UID                         string `json:"uid"`
+	Name                        string `json:"name"`
+	Government                  bool   `json:"government"`
+	IntergovernmentOrganization bool   `json:"intergovernmentalOrganization"`
+	ResearchOrganization        bool   `json:"researchOrganization"`
+	SportOrganization           bool   `json:"sportOrganization"`
+	MedicalOrganization         bool   `json:"medicalOrganization"`
+	MilitaryOrganization        bool   `json:"militaryOrganization"`
+	MilitaryUnit                bool   `json:"militaryUnit"`
+	GovernmentAgency            bool   `json:"overnmentAgency"`
+	LawEnforcementAgency        bool   `json:"lawEnforcementAgency"`
+	PrisonOrPenalColony         bool   `json:"prisonOrPenalColony"`
+	Mirror                      bool   `json:"mirror"`
+	AlternateReality            bool   `json:"alternateReality"`
+}
+
 type Character2Struct struct {
 	UID                    string                     `json:"uid"`
 	Name                   string                     `json:"name"`
@@ -207,7 +224,7 @@ type Character2Struct struct {
 	CharacterSpecies       []CharacterSpeciesStruct   `json:"characterSpecies"`
 	CharacterRelations     []CharacterRelationsStruct `json:"characterRelations"`
 	Titles                 []TitlesStruct             `json:"titles"`
-	Organizations          []string                   `json:"organizations"`
+	Organizations          []OrganizationStruct       `json:"organizations"`
 }
 
 type CharacterFullStruct struct {
@@ -292,6 +309,25 @@ func translate(englishInput string) string {
 
 }
 
+func checkIfWholeWordMatch(inputName string, apiName string) bool {
+
+	var separatedNames []string
+
+	if strings.ToLower(inputName) == strings.ToLower(apiName) {
+		return true
+	}
+
+	separatedNames = strings.Split(apiName, " ")
+
+	for i := 0; i < len(separatedNames); i++ {
+		if strings.ToLower(separatedNames[i]) == strings.ToLower(inputName) {
+			return true
+		}
+	}
+	return false
+
+}
+
 func getSpecies(englishName string) (bool, string) {
 	//Call to Character Endpoint
 
@@ -331,10 +367,36 @@ func getSpecies(englishName string) (bool, string) {
 		if elements > 0 {
 			// Character key is inputJson.Characters[0].UID
 
+			// Find a whole word match
+			var characterUID string
+			var fullMatchCharacterUID string
+			var wordMatched = false
+
+			characterUID = ""
+
+			for i := elements; i > 0; i-- {
+
+				//fmt.Println(inputJson.Characters[i-1].Name)
+				wordMatched = checkIfWholeWordMatch(englishName, inputJson.Characters[i-1].Name)
+				//fmt.Println(wordMatched)
+				if wordMatched {
+					if strings.ToLower(englishName) == strings.ToLower(inputJson.Characters[i-1].Name) {
+						fullMatchCharacterUID = inputJson.Characters[i-1].UID
+					}
+					characterUID = inputJson.Characters[i-1].UID
+				}
+			}
+
+			if characterUID == "" {
+				return false, "Character not found"
+			}
 			// Make another call to get Character Details
-
-			newUrl := characterUrl + inputJson.Characters[0].UID
-
+			var newUrl string
+			if fullMatchCharacterUID != "" {
+				newUrl = characterUrl + fullMatchCharacterUID
+			} else {
+				newUrl = characterUrl + characterUID
+			}
 			req2, err := http.NewRequest("GET", newUrl, nil)
 			if err != nil {
 				log.Fatal("NewRequest: ", err)
@@ -359,7 +421,8 @@ func getSpecies(englishName string) (bool, string) {
 			//Print Species
 			if resp.StatusCode == 200 {
 				if len(characterJson.Character.CharacterSpecies) == 0 {
-					fmt.Println("No species informed")
+					//fmt.Println("No species informed")
+					return false, "No species informed"
 				} else {
 
 					//fmt.Println(characterJson.Character.CharacterSpecies[0].Name)
@@ -367,7 +430,7 @@ func getSpecies(englishName string) (bool, string) {
 				}
 			} else {
 				//fmt.Println("Error retrieving character species")
-				return false,  "Error retrieving character species"
+				return false, "Error retrieving character species"
 			}
 		} else {
 			//fmt.Println("Character not found")
@@ -377,11 +440,10 @@ func getSpecies(englishName string) (bool, string) {
 		//fmt.Println("Error searching for character")
 		return false, "Error searching for character"
 	}
-	return  false, "Undefined Error"
+	return false, "Undefined Error"
 }
 
-
-func main()  {
+func main() {
 
 	//Command line arguments
 
@@ -403,7 +465,9 @@ func main()  {
 
 	fmt.Println(translateResult)
 
+	//FIXME CHANGE LOGIC
 	if translateResult == englishName {
+
 		// Translate Error
 		fmt.Println("No translation found")
 
@@ -418,8 +482,6 @@ func main()  {
 			fmt.Println(speciesMessage)
 		}
 
-
 	}
-
 
 }

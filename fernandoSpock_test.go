@@ -13,6 +13,7 @@ func execTranslate(englishName string, expectedResult string , t *testing.T) {
 
 }
 
+
 func TestTranslate(t *testing.T) {
 
 	t.Logf("Testing Characters Translation")
@@ -140,13 +141,13 @@ func TestGetSpecies(t *testing.T) {
 	execGetSpecies("Turanj","Hirogen" ,t)
 	execGetSpecies("Donik","Hirogen" ,t)
 	execGetSpecies("Idrin","Hirogen" ,t)
-	execGetSpecies("Resh","Illari" ,t)
-	execGetSpecies("Nori","Illari" ,t)
-	execGetSpecies("Demmas","Illari" ,t)
-	execGetSpecies("Ameron","Illari" ,t)
-	execGetSpecies("Tieran","Illari" ,t)
-	execGetSpecies("Adin","Illari" ,t)
-	execGetSpecies("Demmas","Illari" ,t)
+	execGetSpecies("Resh","Ilari" ,t)
+	execGetSpecies("Nori","Ilari" ,t)
+	execGetSpecies("Demmas","Ilari" ,t)
+	execGetSpecies("Ameron","Ilari" ,t)
+	execGetSpecies("Tieran","Ilari" ,t)
+	execGetSpecies("Adin","Ilari" ,t)
+	execGetSpecies("Demmas","Ilari" ,t)
 	execGetSpecies("Assan","Imhotep" ,t)
 	execGetSpecies("Chellick","Jye" ,t)
 	execGetSpecies("Abbot","Kadi" ,t)
@@ -169,7 +170,7 @@ func TestGetSpecies(t *testing.T) {
 	execGetSpecies("Q'ret","Kobali" ,t)
 	execGetSpecies("Chardis","Mislenite" ,t)
 	execGetSpecies("Dejaren","Serosian" ,t)
-	execGetSpecies("Kellin","Ramuran" ,t)
+	execGetSpecies("Kellin","Human" ,t)
 	execGetSpecies("Curneth","Ramuran" ,t)
 	execGetSpecies("Morin","Vaadwaur" ,t)
 	execGetSpecies("Gaul","Vaadwaur" ,t)
