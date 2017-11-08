@@ -175,6 +175,7 @@ type CharacterRelationsStruct struct {
 	Target TargetStruct `json:"target"`
 }
 
+//FIXME: Organizations          []string                   `json:"organizations"`
 type Character2Struct struct {
 	UID                    string                     `json:"uid"`
 	Name                   string                     `json:"name"`
@@ -291,7 +292,96 @@ func translate(englishInput string) string {
 
 }
 
-func main() {
+func getSpecies(englishName string) (bool, string) {
+	//Call to Character Endpoint
+
+	data := url.Values{}
+	data.Set("title", englishName)
+	data.Add("name", englishName)
+
+	// Call API to search character by name
+	req, err := http.NewRequest("POST", characterSearchUrl, bytes.NewBufferString(data.Encode()))
+	if err != nil {
+		log.Fatal("NewRequest: ", err)
+		return false, "HTTP Request Encoding Failed - Character"
+	}
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal("Do: ", err)
+		return false, "HTTP Request Failed - Character"
+	}
+
+	defer resp.Body.Close()
+
+	var inputJson PageStruct
+
+	if err := json.NewDecoder(resp.Body).Decode(&inputJson); err != nil {
+		log.Println(err)
+	}
+
+	// Check API result
+	if resp.StatusCode == 200 {
+
+		var elements int64
+		elements = inputJson.Page.NumberOfElements
+
+		// Check if character exists
+		if elements > 0 {
+			// Character key is inputJson.Characters[0].UID
+
+			// Make another call to get Character Details
+
+			newUrl := characterUrl + inputJson.Characters[0].UID
+
+			req2, err := http.NewRequest("GET", newUrl, nil)
+			if err != nil {
+				log.Fatal("NewRequest: ", err)
+				return false, "HTTP Request Encoding Failed - Species"
+			}
+			client2 := &http.Client{}
+
+			resp2, err := client2.Do(req2)
+			if err != nil {
+				log.Fatal("Do: ", err)
+				return false, "HTTP Request Failed - Species"
+			}
+
+			defer resp2.Body.Close()
+
+			var characterJson CharacterFullStruct
+
+			if err := json.NewDecoder(resp2.Body).Decode(&characterJson); err != nil {
+				log.Println(err)
+			}
+
+			//Print Species
+			if resp.StatusCode == 200 {
+				if len(characterJson.Character.CharacterSpecies) == 0 {
+					fmt.Println("No species informed")
+				} else {
+
+					//fmt.Println(characterJson.Character.CharacterSpecies[0].Name)
+					return true, characterJson.Character.CharacterSpecies[0].Name
+				}
+			} else {
+				//fmt.Println("Error retrieving character species")
+				return false,  "Error retrieving character species"
+			}
+		} else {
+			//fmt.Println("Character not found")
+			return false, "Character not found"
+		}
+	} else {
+		//fmt.Println("Error searching for character")
+		return false, "Error searching for character"
+	}
+	return  false, "Undefined Error"
+}
+
+
+func main()  {
 
 	//Command line arguments
 
@@ -300,6 +390,7 @@ func main() {
 	var englishName string
 	englishName = ""
 
+	//Concatenate all arguments
 	for i := 0; i < len(argsWithoutProg); i++ {
 		if i > 0 {
 			englishName = englishName + " " + argsWithoutProg[i]
@@ -318,85 +409,17 @@ func main() {
 
 	} else {
 
-		//Call to Character Endpoint
-
-		data := url.Values{}
-		data.Set("title", englishName)
-		data.Add("name", englishName)
-
-		// Call API to search character by name
-		req, err := http.NewRequest("POST", characterSearchUrl, bytes.NewBufferString(data.Encode()))
-		if err != nil {
-			log.Fatal("NewRequest: ", err)
-			return
-		}
-		client := &http.Client{}
-
-		resp, err := client.Do(req)
-		if err != nil {
-			log.Fatal("Do: ", err)
-			return
-		}
-
-		defer resp.Body.Close()
-
-		var inputJson PageStruct
-
-		if err := json.NewDecoder(resp.Body).Decode(&inputJson); err != nil {
-			log.Println(err)
-		}
-
-		// Check API result
-		if resp.StatusCode == 200 {
-
-			var elements int64
-			elements = inputJson.Page.NumberOfElements
-
-			// Check if character exists
-			if elements > 0 {
-				// Character key is inputJson.Characters[0].UID
-
-				// Make another call to get Character Details
-
-				newUrl := characterUrl + inputJson.Characters[0].UID
-
-				req2, err := http.NewRequest("GET", newUrl, nil)
-				if err != nil {
-					log.Fatal("NewRequest: ", err)
-					return
-				}
-				client2 := &http.Client{}
-
-				resp2, err := client2.Do(req2)
-				if err != nil {
-					log.Fatal("Do: ", err)
-					return
-				}
-
-				defer resp2.Body.Close()
-
-				var characterJson CharacterFullStruct
-
-				if err := json.NewDecoder(resp2.Body).Decode(&characterJson); err != nil {
-					log.Println(err)
-				}
-
-				//Print Species
-				if resp.StatusCode == 200 {
-					if len(characterJson.Character.CharacterSpecies) == 0 {
-						fmt.Println("No species informed")
-					} else {
-
-						fmt.Println(characterJson.Character.CharacterSpecies[0].Name)
-					}
-				} else {
-					fmt.Println("Error retrieving character species")
-				}
-			} else {
-				fmt.Println("Character not found")
-			}
+		speciesResult, speciesMessage := getSpecies(englishName)
+		if speciesResult == true {
+			//ok
+			fmt.Println(speciesMessage)
 		} else {
-			fmt.Println("Error searching for character")
+			//error
+			fmt.Println(speciesMessage)
 		}
+
+
 	}
+
+
 }
