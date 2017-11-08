@@ -1,31 +1,61 @@
-## Synopsis
+![Klingon Flag](https://github.com/fegoulart/fegoulartAssets/blob/master/klingonFlag.jpg)
 
-At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
+## Fernando Spock Project
 
-## Code Example
+This is a command line application to translate Star Trek character names from **English** to **Klingon**  and find out its species.
 
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+## Architecture decisions
 
-## Motivation
+This application is built in GoLang and I explain why
 
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
+* I love to learn new tricks (it's my first Go experience)
+* Go is from Google and Google rocks
+* Go is so Hipster
+* Go is perfect for command line apps
+* Go is fun 
 
-## Installation
+## Business rules assumptions
 
-Provide code examples and explanations of how to get the project.
+1. English characters not considered in Klingon alphabet (both lower and uppercase)
 
-## API Reference
+    * c
+    * f
+    * g
+    * k
+    * x
+    * z
+    
+2. Namesakes
+    * First occurrence will be considered (eg. **Kellin**)
 
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
+## Build and Execution
+
+`go build fernandoSpock`
+
+`./fernandoSpock <characterName>`
+
+Example
+
+`./fernandoSpock Uhura`<br>
+`0xF8E5 0xF8D6 0xF8E1 0xF8D0`<br>
+`Human`
 
 ## Tests
 
-Describe and show how to run the tests with code examples.
+I used **testify** library to help me with automated tests
 
-## Contributors
+If you haven't installed it yet, just run the following command
 
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
+`go get github.com/stretchr/testify/assert`
+
+Test cases are in fernandoSpock_test.go file.
+Just run the code below to run it
+
+`go test -v`
 
 ## License
 
-A short snippet describing the license (MIT, Apache, etc.)
+Feel free to use it whenever you want. Pull requests are more than welcome.<br><br>
+Bedankt
+
+![Spock greeting](https://github.com/fegoulart/fegoulartAssets/blob/master/spock.jpg)

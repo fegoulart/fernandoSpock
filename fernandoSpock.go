@@ -465,7 +465,7 @@ func main() {
 
 	fmt.Println(translateResult)
 
-	//FIXME CHANGE LOGIC
+
 	if translateResult == englishName {
 
 		// Translate Error
